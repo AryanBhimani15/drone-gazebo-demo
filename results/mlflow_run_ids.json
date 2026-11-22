@@ -1,0 +1,8 @@
+{
+  "experiment_id": "1",
+  "runs": {
+    "ablation": "a358b1cf96614c3da002338320759714",
+    "optuna": "75a0d1ed59f04285adeb395f9f426b09"
+  },
+  "source_sha256": "13cdbc57377e854b47ff62f6b5dd1d67c2fb1dd41a94a86df55b49e8a5e14f1a"
+}

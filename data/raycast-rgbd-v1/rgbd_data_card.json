@@ -1,0 +1,146 @@
+{
+  "version": "raycast-rgbd-v1",
+  "pairs": 5000,
+  "scenes": [
+    "Corridor",
+    "Grove"
+  ],
+  "seeds": [
+    400,
+    401,
+    402,
+    403,
+    404,
+    405,
+    406,
+    407,
+    408,
+    409,
+    410,
+    411,
+    412,
+    413,
+    414,
+    415,
+    416,
+    417,
+    418,
+    419
+  ],
+  "intrinsics": {
+    "fx": 66.27394008259645,
+    "fy": 66.27394008259645,
+    "cx": 63.5,
+    "cy": 39.5,
+    "width": 128,
+    "height": 80,
+    "hfov_deg": 88.0
+  },
+  "far_clip_m": 20.0,
+  "rgb": "uint8 RGB",
+  "depth": "uint16 axial millimetres, 20000 denotes the far clip",
+  "total_shard_bytes": 43974439,
+  "shards": [
+    {
+      "file": "seed_400.npz",
+      "sha256": "52963797504241d22f16a7510d916ec27807a12625cafa42484451b4baac3666",
+      "bytes": 2213709
+    },
+    {
+      "file": "seed_401.npz",
+      "sha256": "4541ee6ac00f6c1ebc6b43b32ec70e1902ed681bbae1486dbc007513537c98ec",
+      "bytes": 2237332
+    },
+    {
+      "file": "seed_402.npz",
+      "sha256": "7f31f6d3ce213850f0dfabe951a81a9e4114475bfc7e2d01cc126c30d555485e",
+      "bytes": 2215853
+    },
+    {
+      "file": "seed_403.npz",
+      "sha256": "24facaefdab4670dfb2f0f6fe70af26656a79a359c7b101b8f0539e9a42df1de",
+      "bytes": 2203221
+    },
+    {
+      "file": "seed_404.npz",
+      "sha256": "4c9783948f3cddf98b011e99b405b86d8c34345cfa52acc381e7ebf21e3bc07b",
+      "bytes": 2247075
+    },
+    {
+      "file": "seed_405.npz",
+      "sha256": "9bfda665f3a4e4743b05d8ba19316a4d2f1335fa524b27e64188b139696ea104",
+      "bytes": 2134007
+    },
+    {
+      "file": "seed_406.npz",
+      "sha256": "a5dea249d3c3310ed4b585b0e3c00836c66313f18487afde42f0e57c944a6c8c",
+      "bytes": 2213012
+    },
+    {
+      "file": "seed_407.npz",
+      "sha256": "a990e72df33f12ea7635a21448eda28ba324a401dfea5791befd24119ea48bc0",
+      "bytes": 2189243
+    },
+    {
+      "file": "seed_408.npz",
+      "sha256": "bf4150e1640340464c2c77719ea05a429a71783be52ecd654c45fbd6b865123e",
+      "bytes": 2220526
+    },
+    {
+      "file": "seed_409.npz",
+      "sha256": "16e00e5dbdf46323d0fd4b385b0e2921d4eebba32b2616aaa023e1502bc74082",
+      "bytes": 2207098
+    },
+    {
+      "file": "seed_410.npz",
+      "sha256": "b7eb4db98eaade2705971989d53233b2a91f79ce67d33c2a0202ba5ca613d03f",
+      "bytes": 2234806
+    },
+    {
+      "file": "seed_411.npz",
+      "sha256": "bf904d5a82e4589e437c126f06d005bfde1a3b77934083d4c0b7a57cd16d3e90",
+      "bytes": 2147803
+    },
+    {
+      "file": "seed_412.npz",
+      "sha256": "3523a16e385bae019173025953010f6e405bfe2217039824fc23eaeb7870d44d",
+      "bytes": 2193402
+    },
+    {
+      "file": "seed_413.npz",
+      "sha256": "3db896ec971f2550242ea1b4b432888274b803dc4cfef43ef7b0a296403b7c3e",
+      "bytes": 2168223
+    },
+    {
+      "file": "seed_414.npz",
+      "sha256": "f79c9fee97951eda2e2b36fdbaa25d0d9ecfe7ad2d2e46820266a280da88e66d",
+      "bytes": 2230046
+    },
+    {
+      "file": "seed_415.npz",
+      "sha256": "21a4c9d42886668b82236f199a863d9c05ffa2125fa0ff4f556a0c6dbc7eae11",
+      "bytes": 2190100
+    },
+    {
+      "file": "seed_416.npz",
+      "sha256": "7bfc3afd4a7f3f477365e9f4c2415688d5e2e1c3d8f0da4a80ce3c068e149d68",
+      "bytes": 2205566
+    },
+    {
+      "file": "seed_417.npz",
+      "sha256": "ce175a67b9826cb137d987cfde7427268c6c7c8d4089079e30c1d8d35359500e",
+      "bytes": 2145324
+    },
+    {
+      "file": "seed_418.npz",
+      "sha256": "23628a90e11483477f35804eca8423d144f8b697cf38a6bea2e2f8db34c45b23",
+      "bytes": 2205858
+    },
+    {
+      "file": "seed_419.npz",
+      "sha256": "0c849054982124ec488394c0f141c76300735f31dbae8129d69d670e7224467a",
+      "bytes": 2172235
+    }
+  ],
+  "unique_content_hashes": 5000
+}

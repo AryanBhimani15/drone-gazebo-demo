@@ -1,0 +1,72 @@
+{
+  "psi": {
+    "brightness": 2.991386966301657,
+    "contrast": 0.9398883986450042,
+    "entropy": 0.9085798687505007,
+    "near_fraction": 0.09474668548684577
+  },
+  "rule_features": [
+    "brightness",
+    "entropy",
+    "near_fraction"
+  ],
+  "alerts": [
+    "brightness",
+    "entropy"
+  ],
+  "threshold": 0.25,
+  "degraded_triggered": true,
+  "degraded_max_speed_mps": 0.8,
+  "degraded_stop_m": 1.7942571729608245,
+  "per_condition": 72,
+  "scenarios": [
+    {
+      "seed": 301,
+      "scene": "Grove",
+      "mode": "midas",
+      "safety": false,
+      "fog": 0.0,
+      "degraded": false,
+      "status": "goal",
+      "time_s": 10.2,
+      "clearance_m": 0.12078488469123844,
+      "stop_frames": 1,
+      "steps": 102,
+      "final_x": 15.651140358944891,
+      "final_y": 0.28485703099702747,
+      "goal_distance_m": 0.45038492122354706
+    },
+    {
+      "seed": 301,
+      "scene": "Grove",
+      "mode": "midas",
+      "safety": false,
+      "fog": 0.17,
+      "degraded": false,
+      "status": "goal",
+      "time_s": 9.3,
+      "clearance_m": 0.20730104187965392,
+      "stop_frames": 0,
+      "steps": 93,
+      "final_x": 15.510074032101093,
+      "final_y": -0.12121298799301812,
+      "goal_distance_m": 0.5046979715432554
+    },
+    {
+      "seed": 301,
+      "scene": "Grove",
+      "mode": "midas",
+      "safety": false,
+      "fog": 0.17,
+      "degraded": true,
+      "status": "timeout",
+      "time_s": 19.0,
+      "clearance_m": 0.17017726250457768,
+      "stop_frames": 5,
+      "steps": 190,
+      "final_x": 12.821499466741832,
+      "final_y": -0.4657309042922321,
+      "goal_distance_m": 3.212440025142153
+    }
+  ]
+}

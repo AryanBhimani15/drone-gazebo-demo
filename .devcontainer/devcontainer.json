@@ -1,0 +1,15 @@
+{
+  "name": "Drone obstacle avoidance",
+  "image": "ros:humble-ros-base-jammy",
+  "remoteUser": "root",
+  "forwardPorts": [
+    6080
+  ],
+  "portsAttributes": {
+    "6080": {
+      "label": "Gazebo desktop",
+      "onAutoForward": "notify"
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh"
+}

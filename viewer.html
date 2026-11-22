@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Drone Obstacle Avoidance | Simulation</title>
+<style>
+:root{color-scheme:dark;--bg:#10181e;--panel:#172229;--line:#2c3f46;--muted:#a2b3bc;--text:#edf2eb;--mint:#9fe7c6;--amber:#fac580}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 "Segoe UI",system-ui,sans-serif}
+[hidden]{display:none!important}
+main{width:min(1440px,100%);padding:42px clamp(18px,4vw,62px);margin:auto}.intro{margin-bottom:24px}
+h1,h2,p,figure{margin:0}h1{font-size:clamp(31px,4vw,56px);line-height:1.02;letter-spacing:-.052em;font-weight:650}
+.intro p{color:var(--muted);margin-top:12px;max-width:70ch}.bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:15px}
+button,select,input[type=number]{font:inherit;color:var(--text);border:1px solid #45606b;border-radius:5px;background:#1c2a32;padding:9px 12px}
+button{cursor:pointer}button.primary{background:var(--mint);color:#10231b;border-color:var(--mint);font-weight:700;min-width:81px}
+button:disabled{opacity:.55;cursor:wait}button:hover:enabled,select:hover{filter:brightness(1.13)}
+:focus-visible{outline:2px solid var(--mint);outline-offset:3px}.run-label{color:var(--muted);font-weight:600;margin-right:5px}
+section{margin-top:18px}.route{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.section-head{display:flex;justify-content:space-between;align-items:center;padding:14px 17px;gap:10px;border-bottom:1px solid var(--line)}
+h2,figcaption{font-size:14px;font-weight:650;letter-spacing:.02em}#outcome{color:var(--mint);text-align:right;font-weight:650}
+canvas{width:100%;height:auto;display:block;background:#101c23}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(110px,1fr));border-top:1px solid var(--line)}
+.metric{padding:11px 16px}.metric+.metric{border-left:1px solid var(--line)}
+.metric span{display:block;font-size:12px;color:var(--muted)}.metric strong{font:650 19px/1.65 "Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
+.tracks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.tracks figure{min-width:0;border:1px solid var(--line);border-radius:8px;background:var(--panel);overflow:hidden}
+.feed{display:block;width:100%;aspect-ratio:16/8;object-fit:cover;background:#101a20;text-align:center;image-rendering:auto}
+.feed[hidden]{display:none}.missing{display:grid;place-items:center;color:var(--muted)}.missing[hidden]{display:none}
+figcaption{padding:12px 15px;display:flex;justify-content:space-between;align-items:center;gap:9px;flex-wrap:wrap}
+.scale{font-size:11px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}.gradient{display:inline-block;width:75px;height:6px;background:linear-gradient(90deg,#fbd365,#fa7e53,#ba4c86,#5d3782,#1a2b4f);border-radius:3px}
+.scrubber{display:flex;gap:12px;align-items:center;padding:13px 16px;border-top:1px solid var(--line)}input[type=range]{width:100%;accent-color:var(--mint)}
+#time{min-width:88px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;font-size:13px}
+footer{margin-top:16px;font-size:13px;color:var(--muted)}#liveform{border:1px solid var(--line);padding:14px 16px;border-radius:8px;background:var(--panel)}
+#liveform[hidden]{display:none}#liveform input[type=number]{width:110px}
+@media(max-width:620px){main{padding:25px 12px}.metric{padding:7px 8px}.metrics{grid-template-columns:repeat(2,1fr)}.metric:nth-child(3){border-left:0}.metric:nth-child(n+3){border-top:1px solid var(--line)}canvas{min-height:140px}}
+</style>
+</head>
+<body>
+<main>
+  <header class="intro">
+    <h1>Drone obstacle avoidance</h1>
+    <p>Watch the drone navigate seeded courses using a single RGB camera and MiDaS-small. Compare the same course with simulator depth and a straight-line baseline.</p>
+    <div class="bar" id="controls">
+      <label for="run" class="run-label">Recorded run</label><select id="run"></select>
+      <button type="button" class="primary" id="play">Play</button>
+      <button type="button" id="reset">Restart</button>
+      <label for="rate" class="run-label">Speed</label>
+      <select id="rate"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select>
+    </div>
+  </header>
+  <form id="liveform" hidden>
+    <div class="bar" style="margin-top:0">
+      <label for="seed">Course seed</label><input id="seed" type="number" min="0" max="1000000" value="1000" required>
+      <label for="backend">Controller depth</label>
+      <select id="backend"><option value="midas">MiDaS-small</option><option value="oracle">Ground truth</option><option value="baseline">No depth</option></select>
+      <label><input type="checkbox" id="safety"> Stop-only test</label>
+      <button class="primary" type="submit">Run simulation</button><output id="notice" aria-live="polite"></output>
+    </div>
+  </form>
+  <section class="route" id="route" aria-label="Flight path and telemetry">
+    <div class="section-head"><h2>Course map</h2><span id="outcome"></span></div>
+    <canvas id="map" width="1100" height="326" aria-label="Top-down view of the course, obstacle positions and flight path"></canvas>
+    <div class="metrics">
+      <div class="metric"><span>Forward command</span><strong id="speed">—</strong></div>
+      <div class="metric"><span>Yaw command</span><strong id="yaw">—</strong></div>
+      <div class="metric"><span>Frontal depth</span><strong id="front">—</strong></div>
+      <div class="metric"><span>Clearance</span><strong id="clearance">—</strong></div>
+    </div>
+    <div class="scrubber"><input id="seek" type="range" min="0" max="0" value="0" aria-label="Replay position"><span id="time">0.0 s</span></div>
+  </section>
+  <section class="tracks" id="tracks" aria-label="Camera feeds">
+    <figure><img class="feed" id="rgb" alt="Synthetic RGB camera frame"><figcaption>Drone RGB camera</figcaption></figure>
+    <figure><img class="feed" id="depth" alt="Depth frame on a fixed near-to-far colour scale"><div class="feed missing" id="missing" hidden>No depth input</div><figcaption><span id="depthLabel">Controller depth</span><span class="scale">0.25 m <i class="gradient"></i> 20 m</span></figcaption></figure>
+  </section>
+  <footer>Fixed-altitude 3D ray-cast simulator. Clearance comes from scene geometry. Frontal depth comes from the selected controller input.</footer>
+</main>
+<script>
+'use strict';
+const runs = __RUN_DATA__;
+const live = __LIVE_MODE__;
+const byId = id => document.getElementById(id);
+const selector = byId('run'), slider = byId('seek'), play = byId('play');
+const map = byId('map'), ctx = map.getContext('2d');
+const modes = {midas:'MiDaS-small',oracle:'Ground truth',baseline:'No depth'};
+const outcomes = {goal:'Goal reached',collision:'Collision',stopped:'Safety stop',timeout:'Timed out'};
+let run, cursor = 0, playing = false, clockStart = 0, simStart = 0;
+
+function addRun(record) {
+  const o = record.outcome;
+  const name = o.safety ? 'Stop-only' : o.scene;
+  selector.add(new Option(name + ' ' + o.seed + ' · ' + modes[o.mode] + ' · ' + outcomes[o.status],
+                         String(selector.length)));
+}
+
+function draw(frame) {
+  const left=-1.35, right=17.3, bottom=-5.2, top=5.2;
+  const sx=x => 30 + (x-left)/(right-left)*(map.width-60);
+  const sy=y => 10 + (top-y)/(top-bottom)*(map.height-20);
+  ctx.clearRect(0,0,map.width,map.height);
+  ctx.strokeStyle='#22353f';ctx.lineWidth=1;
+  for(let x=0;x<=16;x+=2){ctx.beginPath();ctx.moveTo(sx(x),sy(top));ctx.lineTo(sx(x),sy(bottom));ctx.stroke();}
+  for(let y=-4;y<=4;y+=2){ctx.beginPath();ctx.moveTo(sx(left),sy(y));ctx.lineTo(sx(right),sy(y));ctx.stroke();}
+  ctx.save();ctx.beginPath();ctx.rect(sx(left),sy(top),sx(right)-sx(left),sy(bottom)-sy(top));ctx.clip();
+  for(const b of run.course.boxes) {
+    if (b.z > 1.25) continue;
+    const x=sx(b.x-b.w/2), y=sy(b.y+b.d/2);
+    const w=sx(b.x+b.w/2)-x, h=sy(b.y-b.d/2)-y;
+    ctx.fillStyle=b.h>2.8?'#415454':'#91633f';ctx.fillRect(x,y,w,h);
+    ctx.strokeStyle=b.h>2.8?'#637777':'#c18b5c';ctx.strokeRect(x,y,w,h);
+  }
+  const [gx,gy]=run.course.goal;
+  ctx.beginPath();ctx.arc(sx(gx),sy(gy),12,0,Math.PI*2);ctx.strokeStyle='#9fe7c6';ctx.lineWidth=2;ctx.stroke();
+  ctx.fillStyle='#9fe7c6';ctx.font='600 13px Segoe UI';ctx.fillText('GOAL',sx(gx)-14,sy(gy)-22);
+  ctx.fillStyle='#a2b3bc';ctx.fillText('START',sx(0)-13,sy(0)-22);
+  const last = cursor === run.frames.length-1;
+  const count = last ? run.track.length : Math.min(run.track.length, Math.round(frame.time_s*10)+1);
+  ctx.beginPath();
+  for(let i=0;i<count;i++){const [x,y]=run.track[i];i?ctx.lineTo(sx(x),sy(y)):ctx.moveTo(sx(x),sy(y));}
+  ctx.lineJoin='round';ctx.lineCap='round';ctx.lineWidth=3;ctx.strokeStyle='#9fe7c6';ctx.stroke();
+  const position = last ? run.track.at(-1) : [frame.x,frame.y];
+  ctx.translate(sx(position[0]),sy(position[1]));
+  ctx.rotate(-Math.atan2((map.height-20)/(top-bottom)*Math.sin(frame.yaw),(map.width-60)/(right-left)*Math.cos(frame.yaw)));
+  ctx.beginPath();ctx.moveTo(14,0);ctx.lineTo(-9,-8);ctx.lineTo(-5,0);ctx.lineTo(-9,8);ctx.closePath();
+  ctx.fillStyle=frame.stop || (last && run.outcome.status==='collision')?'#fac580':'#edf2eb';ctx.fill();
+  ctx.restore();
+}
+
+function format(value, unit) { return value === null ? '—' : value.toFixed(2)+' '+unit; }
+function paint(i) {
+  cursor=i;slider.value=i;
+  const f=run.frames[i], end=i===run.frames.length-1;
+  draw(f);byId('rgb').src=f.rgb;
+  byId('depth').hidden=!f.depth;byId('missing').hidden=!!f.depth;
+  if(f.depth)byId('depth').src=f.depth;
+  byId('time').textContent=(end?run.outcome.time_s:f.time_s).toFixed(1)+' / '+run.outcome.time_s.toFixed(1)+' s';
+  byId('speed').textContent=format(f.speed,'m/s');byId('yaw').textContent=format(f.yaw_rate,'rad/s');
+  byId('front').textContent=format(f.frontal_m,'m');byId('clearance').textContent=format(f.clearance_m,'m');
+  const o=byId('outcome');o.textContent=end?outcomes[run.outcome.status]:f.stop?'Safety stop active':'In flight';
+  o.style.color=f.stop||end&&run.outcome.status==='collision'?'var(--amber)':'var(--mint)';
+}
+
+function pause(){playing=false;play.textContent='Play';}
+function select(index){
+  pause();run=runs[index];selector.value=String(index);slider.max=run.frames.length-1;
+  byId('depthLabel').textContent=modes[run.outcome.mode]+' depth';
+  byId('route').hidden=false;byId('tracks').hidden=false;
+  paint(0);
+}
+function tick(now){
+  if(!playing)return;
+  const time=simStart+(now-clockStart)*Number(byId('rate').value)/1000;
+  let i=cursor;
+  while(i+1<run.frames.length&&run.frames[i+1].time_s<=time)i++;
+  if(i!==cursor)paint(i);
+  if(i===run.frames.length-1){pause();return;}
+  requestAnimationFrame(tick);
+}
+play.addEventListener('click',()=>{
+  if(playing){pause();return;}
+  if(cursor>=run.frames.length-1)paint(0);
+  playing=true;play.textContent='Pause';clockStart=performance.now();simStart=run.frames[cursor].time_s;
+  requestAnimationFrame(tick);
+});
+byId('reset').addEventListener('click',()=>{pause();paint(0);});
+slider.addEventListener('input',()=>{pause();paint(Number(slider.value));});
+byId('rate').addEventListener('change',()=>{clockStart=performance.now();simStart=run.frames[cursor].time_s;});
+selector.addEventListener('change',()=>select(Number(selector.value)));
+runs.forEach(addRun);
+if(runs.length)select(0);
+else {byId('route').hidden=true;byId('tracks').hidden=true;byId('controls').hidden=true;}
+byId('liveform').hidden=!live;
+byId('backend').addEventListener('change',()=>{
+  const disabled=byId('backend').value==='baseline';
+  byId('safety').disabled=disabled;
+  if(disabled)byId('safety').checked=false;
+});
+byId('liveform').addEventListener('submit',async event=>{
+  event.preventDefault();
+  const submit=event.target.querySelector('button');
+  const status=byId('notice');
+  submit.disabled=true;status.textContent='Simulating…';
+  try {
+    const params=new URLSearchParams({seed:byId('seed').value,mode:byId('backend').value,safety:byId('safety').checked?'1':'0'});
+    const response=await fetch('/simulate?'+params);
+    const payload=await response.json();
+    if(!response.ok)throw new Error(payload.error);
+    runs.push(payload);addRun(payload);select(runs.length-1);
+    byId('controls').hidden=false;status.textContent='Run ready.';
+  } catch(error) {status.textContent=error.message;}
+  finally {submit.disabled=false;}
+});
+</script>
+</body>
+</html>

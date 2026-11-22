@@ -1,0 +1,26 @@
+[
+  {
+    "dataset": "raycast",
+    "alignment": "per_image_gt_median",
+    "images": 250,
+    "valid_pixels": 2098834,
+    "delta1": 0.4483760256688039,
+    "delta2": 0.7054516791963547,
+    "absrel": 0.4644051993827383,
+    "rmse": 3.3104753428222136,
+    "mae": 1.919028223816173,
+    "mse": 13.489619360547785
+  },
+  {
+    "dataset": "raycast",
+    "alignment": "fixed_calibration",
+    "images": 250,
+    "valid_pixels": 2098834,
+    "delta1": 0.42794985908135946,
+    "delta2": 0.700378146220645,
+    "absrel": 0.5083804336103163,
+    "rmse": 3.585509127983482,
+    "mae": 2.1485923387135064,
+    "mse": 14.948958402428373
+  }
+]

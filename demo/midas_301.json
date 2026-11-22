@@ -1,0 +1,14 @@
+{
+  "seed": 301,
+  "scene": "Grove",
+  "mode": "midas",
+  "safety": false,
+  "status": "goal",
+  "frames": 105,
+  "stop_frames": 0,
+  "min_clearance_m": 0.04213600985766586,
+  "motion_commands": 105,
+  "latency_p95_sim_ms": 91.19999999999999,
+  "stamp_basis": "Gazebo simulated clock",
+  "elapsed_sim_s": 10.412
+}

@@ -1,0 +1,14 @@
+{
+  "institution": "[INSTITUTION NAME]",
+  "department": "[DEPARTMENT NAME]",
+  "course_code": "[Course code]",
+  "group": "[Group number]",
+  "academic_year": "[Academic year]",
+  "mentor": "[Faculty mentor]",
+  "students": [
+    {"name": "[Student 1 name]", "roll_number": "[Roll number]"},
+    {"name": "[Student 2 name]", "roll_number": "[Roll number]"},
+    {"name": "[Student 3 name]", "roll_number": "[Roll number]"},
+    {"name": "[Student 4 name]", "roll_number": "[Roll number]"}
+  ]
+}

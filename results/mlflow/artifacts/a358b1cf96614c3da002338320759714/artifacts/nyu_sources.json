@@ -1,0 +1,7 @@
+{
+  "nyu": {
+    "nyu_ranges.mat": "2d724b0c0ab358aa1ce5df855e5bd14a2279ab7202efe22f32a30d612dcb86aa",
+    "nyu_splits.mat": "6e081404491a8bfba2f066beaa9713ef6046f9007aa5f799f2a350506a580cee"
+  },
+  "kitti": {}
+}

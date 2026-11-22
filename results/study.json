@@ -1,0 +1,22 @@
+{
+  "tuning_seeds": [
+    200,
+    201,
+    202,
+    203
+  ],
+  "validation_seeds": [
+    300,
+    301,
+    302,
+    303,
+    304,
+    305
+  ],
+  "sampler": "TPESampler",
+  "sampler_seed": 17,
+  "best_trial": 5,
+  "objective": 12.20862359233141,
+  "elapsed_s": 100.87388109999665,
+  "validation_goals": 6
+}

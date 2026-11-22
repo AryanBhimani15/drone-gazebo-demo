@@ -1,0 +1,8 @@
+{
+  "nyu": {},
+  "kitti": {
+    "kitti_ranges.zip": "ebba5c778893e0d564c261699bcbf10093722df5a3c7e69ab7b7ddaa7637893d",
+    "kitti_calib.zip": "e0108cfd000cf802c14ed94fba38601185c792e5640abba015a34b7a85b812e0",
+    "kitti_eigen.txt": "e226d4ca16e0e6e9695435014347dcf973588531330536fd8a68d298ef091a6b"
+  }
+}

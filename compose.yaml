@@ -1,0 +1,9 @@
+services:
+  simulation:
+    build: .
+    command: ["bash", "ros/run.sh", "1000", "midas"]
+    volumes:
+      - ./gazebo_runs:/project/gazebo_runs
+      - models:/project/models
+volumes:
+  models:
